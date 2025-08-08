@@ -80,6 +80,7 @@ const config = {
   hideForYouTimeline: true,
   hideGrokNav: true,
   hideGrokTweets: false,
+  hideUsersInSearch: ['elonmusk'],
   hideInlinePrompts: true,
   hideJobsNav: true,
   hideLikeMetrics: true,
@@ -5344,34 +5345,48 @@ function onTimelineChange($timeline, page, options = {}) {
             hideItem = shouldHideProfileTimelineItem(itemType)
           }
         }
+      }
 
-        if (!hideItem && config.hideGrokTweets && $tweet.querySelector('a[href^="/i/grok/share/"]')) {
-          hideItem = true
+      if (!hideItem && config.hideGrokTweets && $tweet.querySelector('a[href^="/i/grok/share/"]')) {
+        hideItem = true
+      }
+
+      if (!hideItem && config.hideUsersInSearch && config.hideUsersInSearch.length > 0 && (location.pathname.includes('/search') || location.pathname.includes('/hashtag/'))) {
+        // Get all avatar links
+        let $avatarLinks = $item.querySelectorAll('[data-testid="Tweet-User-Avatar"] a[href^="/"]')
+        for (let $link of $avatarLinks) {
+          let username = $link.getAttribute('href').substring(1).toLowerCase()
+          if (config.hideUsersInSearch.some(user => user.toLowerCase().replace('@', '') === username)) {
+            hideItem = true
+            // 直接非表示にする
+            $item.style.display = 'none'
+            break
+          }
         }
+      }
 
-        if (!hideItem && config.mutableQuoteTweets && (itemType == 'QUOTE_TWEET' || itemType == 'RETWEETED_QUOTE_TWEET')) {
-          if (config.mutedQuotes.length > 0) {
-            let quotedTweet = getQuotedTweetDetails($tweet)
-            hideItem = config.mutedQuotes.some(muted => muted.user == quotedTweet.user && muted.time == quotedTweet.time)
-          }
-          if (!hideItem) {
-            addCaretMenuListenerForQuoteTweet($tweet)
-          }
+      if (!hideItem && config.mutableQuoteTweets && (itemType == 'QUOTE_TWEET' || itemType == 'RETWEETED_QUOTE_TWEET')) {
+        if (config.mutedQuotes.length > 0) {
+          let quotedTweet = getQuotedTweetDetails($tweet)
+          hideItem = config.mutedQuotes.some(muted => muted.user == quotedTweet.user && muted.time == quotedTweet.time)
         }
+        if (!hideItem) {
+          addCaretMenuListenerForQuoteTweet($tweet)
+        }
+      }
 
-        if (config.twitterBlueChecks != 'ignore') {
-          for (let $svg of $tweet.querySelectorAll(Selectors.VERIFIED_TICK)) {
-            let isBlueCheck = isBlueVerified($svg)
-            if (!isBlueCheck) continue
+      if (config.twitterBlueChecks != 'ignore') {
+        for (let $svg of $tweet.querySelectorAll(Selectors.VERIFIED_TICK)) {
+          let isBlueCheck = isBlueVerified($svg)
+          if (!isBlueCheck) continue
 
-            blueCheck($svg)
+          blueCheck($svg)
 
-            // Don't count a tweet as blue if the check is in a quoted tweet
-            let userProfileLink = $svg.closest('a[role="link"]:not([href^="/i/status"])')
-            if (!userProfileLink) continue
+          // Don't count a tweet as blue if the check is in a quoted tweet
+          let userProfileLink = $svg.closest('a[role="link"]:not([href^="/i/status"])')
+          if (!userProfileLink) continue
 
-            isBlueTweet = true
-          }
+          isBlueTweet = true
         }
       }
 
@@ -5560,6 +5575,20 @@ function onIndividualTweetTimelineChange($timeline, options) {
 
       if (!hideItem && config.hideGrokTweets && $tweet.querySelector('a[href^="/i/grok/share/"]')) {
         hideItem = true
+      }
+
+      if (!hideItem && config.hideUsersInSearch && config.hideUsersInSearch.length > 0 && (location.pathname.includes('/search') || location.pathname.includes('/hashtag/'))) {
+        // Get all avatar links
+        let $avatarLinks = $item.querySelectorAll('[data-testid="Tweet-User-Avatar"] a[href^="/"]')
+        for (let $link of $avatarLinks) {
+          let username = $link.getAttribute('href').substring(1).toLowerCase()
+          if (config.hideUsersInSearch.some(user => user.toLowerCase().replace('@', '') === username)) {
+            hideItem = true
+            // 直接非表示にする
+            $item.style.display = 'none'
+            break
+          }
+        }
       }
 
       if (!hideItem && (config.twitterBlueChecks != 'ignore' || config.hideTwitterBlueReplies)) {

@@ -125,6 +125,9 @@
   "hideDiscoverSuggestionsLabel": {
     "message": "Hide \"Discover\" suggestions"
   },
+  "hideUsersInSearchLabel": {
+    "message": "Hide tweets from specific users in search results"
+  },
   "hideExploreNavLabel": {
     "message": "Explore"
   },

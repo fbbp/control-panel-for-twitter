@@ -128,7 +128,8 @@ section.group > section > p {
   font-size: 12px;
 }
 
-section.textarea {
+section.textarea,
+section.text {
   display: flex;
   justify-content: space-between;
   padding: 4px 12px 4px 0;
@@ -138,12 +139,36 @@ section.textarea {
   gap: 12px;
 }
 
+section.text > label {
+  padding-left: 12px;
+  padding-right: 0;
+  margin-bottom: 0;
+}
+
+section.text .note {
+  font-size: 12px;
+  color: rgb(95, 99, 104);
+  margin-left: 12px;
+  margin-top: -8px;
+}
+
 section.textarea button {
   text-align: center;
 }
 
 textarea {
   resize: vertical;
+  margin-left: 12px;
+  margin-right: 12px;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 8px;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+}
+
+#hideUsersInSearch {
+  min-height: 100px;
 }
 /* Prevent zooming */
 body.iOS.safari textarea {
@@ -448,6 +473,14 @@ body.iOS.safari .checkbox input:focus + .toggle {
   section.group > p,
   section.group > section > * {
     color: rgb(154, 160, 166);
+  }
+  section.text .note {
+    color: rgb(154, 160, 166);
+  }
+  textarea {
+    background-color: #3f4042;
+    color: #e8eaed;
+    border-color: #5f6368;
   }
 
   /* Edge dark mode overrides */

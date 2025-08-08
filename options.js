@@ -63,6 +63,7 @@ for (let translationId of [
   'hideBookmarkMetricsLabel',
   'hideComposeTweetLabel',
   'hideDiscoverSuggestionsLabel',
+  'hideUsersInSearchLabel',
   'hideExploreNavLabel',
   'hideExploreNavWithSidebarLabel',
   'hideExplorePageContentsLabel',
@@ -218,6 +219,7 @@ const defaultConfig = {
   hideProfileRetweets: false,
   hideQuoteTweetMetrics: true,
   hideQuotesFrom: [],
+  hideUsersInSearch: ['elonmusk'],
   hideReplyMetrics: true,
   hideRetweetMetrics: true,
   hideSeeNewTweets: false,
@@ -305,6 +307,7 @@ let $hideQuotesFromLabel = /** @type {HTMLElement} */ (document.querySelector('#
 let $mutedQuotes =  /** @type {HTMLDivElement} */ (document.querySelector('#mutedQuotes'))
 let $mutedQuotesDetails =  /** @type {HTMLDetailsElement} */ (document.querySelector('details#mutedQuotesDetails'))
 let $mutedQuotesLabel = /** @type {HTMLElement} */ (document.querySelector('#mutedQuotesLabel'))
+let $hideUsersInSearch = /** @type {HTMLTextAreaElement} */ (document.querySelector('#hideUsersInSearch'))
 let $saveCustomCssButton = document.querySelector('button#saveCustomCss')
 let $showBlueReplyFollowersCountLabel = /** @type {HTMLElement} */ (document.querySelector('#showBlueReplyFollowersCountLabel'))
 //#endregion
@@ -386,7 +389,19 @@ function applyConfig() {
  * @param {Event} e
  */
 function onFormChanged(e) {
-  if (e.target instanceof HTMLTextAreaElement) return
+  if (e.target instanceof HTMLTextAreaElement) {
+    if (e.target.id === 'hideUsersInSearch') {
+      // Parse textarea value
+      let users = e.target.value
+        .split('\n')
+        .map(user => user.trim().toLowerCase().replace('@', ''))
+        .filter(user => user.length > 0)
+      
+      optionsConfig.hideUsersInSearch = users
+      chrome.storage.local.set({hideUsersInSearch: users})
+    }
+    return
+  }
 
   /** @type {Partial<import("./types").Config>} */
   let changedConfig = {}
@@ -557,6 +572,11 @@ function updateFormControls() {
   Object.keys(optionsConfig)
         .filter(prop => prop in $form.elements)
         .forEach(prop => updateFormControl($form.elements[prop], optionsConfig[prop]))
+  
+  // Special handling for hideUsersInSearch textarea
+  if ($hideUsersInSearch && optionsConfig.hideUsersInSearch) {
+    $hideUsersInSearch.value = optionsConfig.hideUsersInSearch.join('\n')
+  }
 }
 
 function updateFormControl($control, value) {

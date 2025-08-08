@@ -122,6 +122,9 @@
   "hideDiscoverSuggestionsLabel": {
     "message": "「発見」の提案を非表示"
   },
+  "hideUsersInSearchLabel": {
+    "message": "検索結果で特定ユーザーのツイートを非表示"
+  },
   "hideExploreNavLabel": {
     "message": "「話題を検索」"
   },

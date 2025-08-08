@@ -50,7 +50,7 @@ chrome.storage.local.get((/** @type {Partial<import("./types").Config>} */ store
   let $main = document.createElement('script')
   $main.src = chrome.runtime.getURL('script.js')
   $main.onload = function() {
-    this.remove()
+    $main.remove()
   }
   document.documentElement.appendChild($main)
 

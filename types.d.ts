@@ -26,6 +26,7 @@ export type Config = {
   hideForYouTimeline: boolean
   hideGrokNav: boolean
   hideGrokTweets: boolean
+  hideUsersInSearch: string[]
   hideInlinePrompts: boolean
   hideJobsNav: boolean
   hideLikeMetrics: boolean

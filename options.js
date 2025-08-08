@@ -1,5 +1,10 @@
 document.title = chrome.i18n.getMessage(`extensionName`)
 
+function formatFollowerCount(num) {
+  let numFormat = Intl.NumberFormat(undefined, {notation: 'compact', compactDisplay: num < 1_000_000 ? 'short' : 'long'})
+  return numFormat.format(num)
+}
+
 for (let optionValue of [
   '1000',
   '10000',
@@ -144,7 +149,10 @@ for (let translationId of [
   'uninvertFollowButtonsLabel',
   'xFixesLabel',
 ]) {
-  document.getElementById(translationId).textContent = chrome.i18n.getMessage(translationId)
+  const element = document.getElementById(translationId)
+  if (element) {
+    element.textContent = chrome.i18n.getMessage(translationId)
+  }
 }
 
 for (let translationClass of [
@@ -161,7 +169,10 @@ for (let translationClass of [
 }
 
 for (let amount of [1_000, 10_000, 100_000, 1_000_000]) {
-  document.querySelector(`option[value="${amount}"]`).textContent = formatFollowerCount(amount)
+  const element = document.querySelector(`option[value="${amount}"]`)
+  if (element) {
+    element.textContent = formatFollowerCount(amount)
+  }
 }
 
 /** @type {boolean} */
@@ -219,7 +230,7 @@ const defaultConfig = {
   hideProfileRetweets: false,
   hideQuoteTweetMetrics: true,
   hideQuotesFrom: [],
-  hideUsersInSearch: ['elonmusk'],
+  hideUsersInSearch: [],
   hideReplyMetrics: true,
   hideRetweetMetrics: true,
   hideSeeNewTweets: false,
@@ -321,11 +332,6 @@ function exportConfig() {
   ], {type: 'text/plain'}))
   $a.click()
   URL.revokeObjectURL($a.href)
-}
-
-function formatFollowerCount(num) {
-  let numFormat = Intl.NumberFormat(undefined, {notation: 'compact', compactDisplay: num < 1_000_000 ? 'short' : 'long'})
-  return numFormat.format(num)
 }
 
 /**

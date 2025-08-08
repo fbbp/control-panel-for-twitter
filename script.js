@@ -80,7 +80,7 @@ const config = {
   hideForYouTimeline: true,
   hideGrokNav: true,
   hideGrokTweets: false,
-  hideUsersInSearch: ['elonmusk'],
+  hideUsersInSearch: [],
   hideInlinePrompts: true,
   hideJobsNav: true,
   hideLikeMetrics: true,
@@ -5359,7 +5359,9 @@ function onTimelineChange($timeline, page, options = {}) {
           if (config.hideUsersInSearch.some(user => user.toLowerCase().replace('@', '') === username)) {
             hideItem = true
             // 直接非表示にする
-            $item.style.display = 'none'
+            if ($item instanceof HTMLElement) {
+              $item.style.display = 'none'
+            }
             break
           }
         }
@@ -5585,7 +5587,9 @@ function onIndividualTweetTimelineChange($timeline, options) {
           if (config.hideUsersInSearch.some(user => user.toLowerCase().replace('@', '') === username)) {
             hideItem = true
             // 直接非表示にする
-            $item.style.display = 'none'
+            if ($item instanceof HTMLElement) {
+              $item.style.display = 'none'
+            }
             break
           }
         }
